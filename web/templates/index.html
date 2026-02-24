@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Control</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Login Screen -->
+<div class="login-wrapper" id="loginScreen">
+    <div class="login-card">
+        <div class="logo">WC</div>
+        <h1>Warehouse Control</h1>
+        <p class="subtitle">Sign in to manage your inventory</p>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userSelect">Select User</label>
+                <select id="userSelect">
+                    <option value="">Loading users...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="passwordInput">Password</label>
+                <input type="password" id="passwordInput" value="password" placeholder="Enter password">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+    </div>
+</div>
+
+<!-- App Shell -->
+<div class="app" id="appShell">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">WC</div>
+            <span class="header-title">Warehouse Control</span>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <span class="name" id="headerUsername"></span>
+                <span class="badge" id="headerRole"></span>
+            </div>
+            <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="items">Items</button>
+        <button class="tab-btn" data-tab="history" id="historyTab">History</button>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- ─── Items Tab ──────────────────────────────────────────── -->
+        <div class="tab-panel active" id="panelItems">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Inventory Items</h2>
+                    <div class="card-header-actions">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search by name or SKU…">
+                        <button class="btn btn-outline btn-sm" id="searchBtn">Search</button>
+                        <button class="btn btn-primary btn-sm" id="addItemBtn" style="display:none;">+ Add Item</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>SKU</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Location</th>
+                            <th>Updated</th>
+                            <th style="width:1%">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                        <tr><td colspan="7" class="empty-state">Loading items…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="itemsPagination" class="pagination"></div>
+            </div>
+
+            <!-- Item History Panel (inline, below table) -->
+            <div id="itemHistoryPanel" style="display:none;" class="history-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 id="itemHistoryTitle">Item History</h2>
+                        <button class="btn btn-outline btn-sm" id="closeItemHistory">Close</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Changed By</th>
+                                <th>Date</th>
+                                <th>Changes</th>
+                            </tr>
+                            </thead>
+                            <tbody id="itemHistoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Global History Tab ─────────────────────────────────── -->
+        <div class="tab-panel" id="panelHistory">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Audit History</h2>
+                    <button class="btn btn-outline btn-sm" id="exportCsvBtn">Export CSV</button>
+                </div>
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label for="filterAction">Action</label>
+                        <select id="filterAction">
+                            <option value="">All</option>
+                            <option value="INSERT">INSERT</option>
+                            <option value="UPDATE">UPDATE</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDateFrom">Date From</label>
+                        <input type="date" id="filterDateFrom">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDateTo">Date To</label>
+                        <input type="date" id="filterDateTo">
+                    </div>
+                    <button class="btn btn-primary btn-sm" id="applyFiltersBtn">Apply</button>
+                    <button class="btn btn-outline btn-sm" id="clearFiltersBtn">Clear</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Item ID</th>
+                            <th>Changed By</th>
+                            <th>Date</th>
+                            <th>Changes</th>
+                        </tr>
+                        </thead>
+                        <tbody id="globalHistoryBody">
+                        <tr><td colspan="5" class="empty-state">Apply filters to view history</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="auditPagination" class="pagination"></div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ─── Item Modal (Add / Edit) ────────────────────────────────── -->
+<div class="modal-overlay" id="itemModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="itemModalTitle">Add Item</h3>
+            <button class="close-btn" id="itemModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="itemEditId">
+            <div class="form-group">
+                <label for="fieldName">Name</label>
+                <input type="text" id="fieldName" placeholder="Item name" required>
+            </div>
+            <div class="form-group">
+                <label for="fieldSku">SKU</label>
+                <input type="text" id="fieldSku" placeholder="e.g. WH-001" required>
+            </div>
+            <div class="form-group">
+                <label for="fieldQuantity">Quantity</label>
+                <input type="number" id="fieldQuantity" min="0" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label for="fieldPrice">Price</label>
+                <input type="number" id="fieldPrice" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label for="fieldLocation">Location</label>
+                <input type="text" id="fieldLocation" placeholder="e.g. Aisle 3, Shelf B">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="itemModalCancel">Cancel</button>
+            <button class="btn btn-primary" id="itemModalSave">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Confirm Delete Modal ───────────────────────────────────── -->
+<div class="modal-overlay" id="confirmModal" style="display:none;">
+    <div class="modal" style="max-width:400px;">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="close-btn" id="confirmModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirmMessage">Are you sure you want to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="confirmCancel">Cancel</button>
+            <button class="btn btn-danger" id="confirmOk">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
