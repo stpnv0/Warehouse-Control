@@ -46,7 +46,7 @@ JWT-авторизацией, аудитом изменений через тр�
 
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/stpnv0/WarehouseControl.git
+git clone https://github.com/stpnv0/Warehouse-Control.git
 cd WarehouseControl
 
 # Создать конфигурационные файлы
