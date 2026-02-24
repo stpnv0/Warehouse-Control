@@ -1,0 +1,6 @@
+bin/
+/warehouse
+.env
+config.yaml
+.idea/
+.DS_Store
