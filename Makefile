@@ -1,7 +1,7 @@
 .PHONY: build run test lint mocks migrate-up migrate-down docker-up docker-down clean
 
-BINARY_NAME=server
-CMD_PATH=./cmd/server
+BINARY_NAME=warehouse
+CMD_PATH=./cmd/warehouse
 
 build:
 	go build -o bin/$(BINARY_NAME) $(CMD_PATH)
