@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stpnv0/WarehouseControl/internal/domain"
 	"github.com/wb-go/wbf/ginext"
 )
@@ -16,7 +15,7 @@ type TokenValidator interface {
 }
 
 func Auth(validator TokenValidator) ginext.HandlerFunc {
-	return func(c *gin.Context) {
+	return func(c *ginext.Context) {
 		token := extractBearerToken(c)
 		if token == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, ginext.H{
