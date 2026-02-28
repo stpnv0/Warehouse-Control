@@ -1,0 +1,30 @@
+packages:
+  github.com/stpnv0/WarehouseControl/internal/service:
+    config:
+      dir: "{{.InterfaceDir}}"
+      template: testify
+      pkgname: service
+      filename: "mocks_test.go"
+    interfaces:
+      userRepository:
+      itemRepository:
+      auditRepository:
+      TokenManager:
+  github.com/stpnv0/WarehouseControl/internal/handler:
+    config:
+      dir: "{{.InterfaceDir}}"
+      template: testify
+      pkgname: handler
+      filename: "mocks_test.go"
+    interfaces:
+      authService:
+      itemService:
+      auditService:
+  github.com/stpnv0/WarehouseControl/internal/middleware:
+    config:
+      dir: "{{.InterfaceDir}}"
+      template: testify
+      pkgname: middleware
+      filename: "mocks_test.go"
+    interfaces:
+      TokenValidator:
